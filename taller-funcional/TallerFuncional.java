@@ -8,6 +8,7 @@ public class TallerFuncional {
     record Empleado(String nombre, double salario) {}
 
     public static void main(String[] args) {
+        Locale.setDefault(Locale.US);
         System.out.println("Taller de Programación Funcional iniciado");
 
         List<Empleado> empleados = List.of(
@@ -24,6 +25,8 @@ public class TallerFuncional {
                 .collect(Collectors.toList());
         System.out.println("Empleados con salario > 1000: " + filtrados.size());
 
+        Function<Empleado, String> aMayusculas = e -> e.nombre().toUpperCase();
+
         List<Empleado> ordenados = filtrados.stream()
                 .sorted(Comparator.comparingDouble(Empleado::salario).reversed())
                 .collect(Collectors.toList());
@@ -31,7 +34,7 @@ public class TallerFuncional {
         System.out.println("=== Empleados con salario > 1000 (ordenados desc.) ===");
         ordenados.forEach(e ->
                 System.out.printf("%-8s-> %.1f%n",
-                        e.nombre().toUpperCase(), e.salario())
+                        aMayusculas.apply(e), e.salario())
         );
 
         double total = ordenados.stream()
@@ -62,7 +65,7 @@ public class TallerFuncional {
                     if (e.salario() >= 2000) return "ALTO (>= 2000)";
                     else if (e.salario() >= 1000) return "MEDIO (1000-1999)";
                     else return "BAJO (< 1000)";
-                }));
+                }, LinkedHashMap::new, Collectors.toList()));
 
         porRango.forEach((rango, lista) -> {
             String nombres = lista.stream()
